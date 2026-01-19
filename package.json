@@ -1,0 +1,19 @@
+{
+  "name": "@glitchproof/enumerator",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:types": "vitest typecheck"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "expect-type": "^1.1.0",
+    "vitest": "^4.0.17"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
