@@ -14,17 +14,20 @@ export const createObjectFeature = <const T extends Record<string, any>>(
         values: Object.freeze([...directValues]),
 
         get asType(): Record<string, EnumerateValue> {
-            if (!cachedAsType) {
-                cachedAsType = Object.fromEntries(
-                    Object.entries(obj).map(([key, value]) => {
-                        if(isEnumerateValueWithMetadata(value)){
-                            const [ enumVal ] = value;
-                            return [key, enumVal];
-                        }
+            if (cachedAsType === undefined) {
+                cachedAsType = Object.create(null);
 
-                        return [key, value];
-                    })
-                );
+                for(const [key, value] of Object.entries(obj)){
+                    if(isEnumerateValueWithMetadata(value)){
+                        const [enumerateValue] = value;
+                        cachedAsType[key] = enumerateValue;
+                        continue;
+                    }
+
+                    cachedAsType[key] = value;
+                }
+
+                Object.freeze(cachedAsType);
             }
 
             return cachedAsType;

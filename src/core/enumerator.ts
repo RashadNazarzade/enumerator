@@ -1,12 +1,7 @@
-// import type { EnumerateNestedDict, EnumerateValue } from "@/types/base";
-import type { Dict } from "@/types/enumerator";
+import type { Dict, EnumerateGenerator, Options } from "@/types/enumerator";
 
-export const enumerator = <Enums extends Dict>(enums: Enums) => {
-    const entries = Object.entries(enums);
+import { processDictionary } from "./processors";
 
-    for (let i = 0; i < entries.length; i++) {
-        // const [key, value] = entries[i] as [string, EnumerateNestedDict | EnumerateValue];
-
-
-    }
+export const enumerator = <const Enums extends Dict>(enums: Enums, options?: Options) => {
+    return processDictionary(enums, options) as EnumerateGenerator<Enums>;
 }

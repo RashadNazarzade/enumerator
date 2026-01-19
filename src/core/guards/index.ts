@@ -3,5 +3,4 @@ export {
     isMetaData,
     isEnumerateValueWithMetadata,
     isNestedDict,
-    getEnumValueType,
   } from './type-guards';

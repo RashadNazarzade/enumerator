@@ -1,6 +1,16 @@
 export class EnumeratorValueError extends Error {
-    constructor(value: unknown) {
-        super(`Invalid enum value format: ${JSON.stringify(value)}`);
+    constructor(value: unknown, path?: string[]) {
+        const pathInfo = path ? `\nPath: ${path.join('.')}` : '';
+        
+        super(
+            `Invalid enum value format${pathInfo}\n` +
+            `Received: ${JSON.stringify(value)}\n\n` +
+            `Expected one of:\n` +
+            `  - string: 'active'\n` +
+            `  - number: 123\n` +
+            `  - tuple: ['active', { description: '...' }]\n` +
+            `  - nested: { KEY: 'value' }`
+        );
         this.name = 'EnumeratorValueError';
     }
 }

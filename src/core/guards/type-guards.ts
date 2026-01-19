@@ -4,6 +4,7 @@ import type {
     EnumerateValueMetadata,
     EnumerateNestedDict
 } from "@/types/base";
+import { METADATA_TUPLE_LENGTH } from "@/constants/config";
 
 export const isEnumerateValue = (value: unknown): value is EnumerateValue => {
     return typeof value === 'string' || typeof value === 'number';
@@ -14,7 +15,7 @@ export const isMetaData = (value: unknown): value is EnumerateValueMetadata => {
 }
 
 export const isEnumerateValueWithMetadata = (value: unknown): value is EnumerateValueWithMeta => {
-    return Array.isArray(value) && value.length === 2 && isEnumerateValue(value[0]) && isMetaData(value[1]);
+    return Array.isArray(value) && value.length === METADATA_TUPLE_LENGTH && isEnumerateValue(value[0]) && isMetaData(value[1]);
 }
 
 export const isNestedDict = (value: unknown): value is EnumerateNestedDict => {
@@ -26,12 +27,3 @@ export const isNestedDict = (value: unknown): value is EnumerateNestedDict => {
 
     return true;
 };
-
-
-export const getEnumValueType = (value: unknown): "value" | "meta" | "nested" | "unknown" => {
-    if (isEnumerateValue(value)) return 'value';
-    if (isEnumerateValueWithMetadata(value)) return 'meta';
-    if (isNestedDict(value)) return 'nested'
-
-    return 'unknown';
-}

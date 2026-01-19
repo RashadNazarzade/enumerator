@@ -1,23 +1,17 @@
-import type { EnumerateValue } from '@/types/base';
-import { isEnumerateValueWithMetadata } from '../guards/type-guards';
+import type { EnumerateValue, EnumerateValueWithMeta } from '@/types/base';
 
 export const createValueFeature = <const T extends EnumerateValue>(
     enumValue: T
+) => ({
+    value: enumValue,
+    equals: (check: unknown) => Object.is(check, enumValue),
+});
+
+export const createMetadataValueFeature = <const T extends EnumerateValueWithMeta>(
+    enumValue: T
 ) => {
-    if (isEnumerateValueWithMetadata(enumValue)) {
-        const [value, meta] = enumValue;
 
-        return {
-            value,
-            meta,
-            equals: (check: unknown) => check === value,
-        }
-    }
+    const [value, meta] = enumValue;
 
-    
-    return {
-        value: enumValue,
-        equals: (check: unknown) => check === enumValue,
-    }
-};
-
+    return Object.assign(createValueFeature(value), { meta });
+}; 

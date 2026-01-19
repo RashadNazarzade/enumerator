@@ -21,3 +21,12 @@ export type EnumerateFlatObject = {
 export type EnumerateNestedDict = {
     [key: string]: EnumerateValue | EnumerateNestedDict;
 };
+
+
+export type ProcessorOptions = {
+    maxDepth?: number;
+    currentDepth?: number;
+    pathStack?: string[];
+}
+
+export type EnumerateOptions = Pick<ProcessorOptions, 'maxDepth'>;

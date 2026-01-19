@@ -1,0 +1,17 @@
+{
+  "benchmarks": {
+    "iterations": 100,
+    "time": 1000,
+    "warmup": true,
+    "warmupIterations": 10
+  },
+  "compare": {
+    "baseline": "main",
+    "threshold": 10
+  },
+  "output": {
+    "format": "table",
+    "colors": true,
+    "verbose": false
+  }
+}

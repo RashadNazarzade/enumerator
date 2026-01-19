@@ -7,6 +7,9 @@ export default defineConfig({
       enabled: true,
       tsconfig: './tsconfig.json',
     },
+    benchmark: {
+      include: ['src/tests/performance/**/*.bench.ts'],
+    },
   },
   resolve: {
     alias: {
