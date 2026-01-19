@@ -41,11 +41,9 @@ export const processDictionary = <const Dict extends EnumerateNestedDict>(
         }
 
         if (isEnumerateValueWithMetadata(value)) {
-            const [enumerateValue] = value;
-
             processedEnum[key] = createMetadataValueFeature(value);
 
-            directValues[directValuesIndex++] = enumerateValue;
+            directValues[directValuesIndex++] = value;
             
             continue;
         }

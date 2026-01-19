@@ -13,8 +13,6 @@
     "test:all": "npm run test:types && npm run test:runtime"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "@types/node": "^25.0.9",
     "expect-type": "^1.1.0",
     "vitest": "^4.0.17"
   },

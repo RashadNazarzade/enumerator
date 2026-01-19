@@ -3,11 +3,7 @@ export type DefaultMaxDepth = 10;
 export type EnumerateValType = string | number;
 
 export type EnumerateValueMetadata = { 
-    description?: string;
-    category?: string;
-    deprecated?: boolean;
-    since?: string;
-    tags?: string[];
+    [key: string]: any;
 };
 
 export type EnumerateValueWithMeta = readonly [enumerateValue: EnumerateValType, enumerateMeta: EnumerateValueMetadata];

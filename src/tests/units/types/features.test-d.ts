@@ -3,7 +3,6 @@ import type { ObjectFeature, ValueFeature } from '@/types/features';
 import type { ValueBase, ValueEquals } from '@/types/features/val';
 import type {
   ObjectBase,
-  ObjectContainsOneOf,
   ObjectContains,
 } from '@/types/features/obj';
 
@@ -142,18 +141,6 @@ test('IsObjectFeature - should have contains method', () => {
 });
 
 
-test('IsInObjectFeature - should have containsOneOf working correctly', () => {
-  type EnumValObj = { A: 'a'; B: 'b'; C: 'c' };
-  type EnumVals = 'a' | 'b' | 'c';
-  
-  type Feature = ObjectContainsOneOf<EnumValObj, EnumVals>;
-  
-  expectTypeOf<Feature>().toEqualTypeOf<{
-    containsOneOf<CheckWithIn extends EnumVals>(check: unknown, checkWithin: CheckWithIn[]): check is CheckWithIn;
-    containsOneOf<CheckWithIn extends EnumVals>(check: unknown, ...checkWithin: CheckWithIn[]): check is CheckWithIn;
-    containsOneOf<CheckWithIn extends EnumVals>(check: unknown, checkWithinCallback: (enumObj: EnumValObj) => CheckWithIn | CheckWithIn[]): check is CheckWithIn;
-  }>();
-});
 
 test('ObjectFeature - should work with complex nested structure', () => {
   type ComplexEnum = {

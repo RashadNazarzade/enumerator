@@ -1,6 +1,8 @@
 import type { ExtractDictValues } from "./extractors";
 
-export type PickDictValues<Dict, DictObj = ExtractDictValues<Dict>> = DictObj[keyof DictObj];
+export type Simplify<T> = T extends infer U ? U : never;
+
+export type PickDictValues<Dict, DictObj = ExtractDictValues<Dict>> = Simplify<DictObj[keyof DictObj]>;
 
 
 type UnionToIntersection<U> =

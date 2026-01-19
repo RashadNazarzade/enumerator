@@ -419,4 +419,111 @@ describe('Enumerator - Core Functionality', () => {
       expect(Routes.API.V1.contains('/api/v1/users')).toBe(true);
     });
   });
+
+
+  describe('map and forEach', () => {
+    test('should map values without metadata', () => {
+      const Status = enumerator({
+        ACTIVE: 'active',
+        INACTIVE: 'inactive',
+      } as const);
+
+      const mapped = Status.map((item) => {
+        expect(item.value).toBeDefined();
+        expect(item.meta).toBeUndefined();
+        return item.value.toUpperCase();
+      });
+
+      expect(mapped).toEqual(['ACTIVE', 'INACTIVE']);
+    });
+
+    test('should forEach values without metadata', () => {
+      const Status = enumerator({
+        ACTIVE: 'active',
+        INACTIVE: 'inactive',
+      } as const);
+
+      const arr: string[] = [];
+
+      Status.forEach((item) => {
+        expect(item.value).toBeDefined();
+        expect(item.meta).toBeUndefined();
+        arr.push(item.value);
+      });
+
+      expect(arr).toEqual(['active', 'inactive']);
+    });
+
+    test('should map values with metadata', () => {
+      const Status = enumerator({
+        ACTIVE: ['active', { description: 'Active User' }] as const,
+        INACTIVE: ['inactive', { description: 'Inactive User' }] as const,
+      } as const);
+
+      const mapped = Status.map((item) => {
+
+        expect(item.value).toBeDefined();
+        expect(item.meta).toBeDefined();
+        return `${item.value}: ${item.meta?.description}`;
+      });
+
+      expect(mapped).toEqual(['active: Active User', 'inactive: Inactive User']);
+    });
+
+    test('should forEach values with metadata', () => {
+      const Status = enumerator({
+        ACTIVE: ['active', { icon: '✅' }] as const,
+        INACTIVE: ['inactive', { icon: '⭕' }] as const,
+      } as const);
+
+      const results: Array<{ value: string; icon: string }> = [];
+
+      Status.forEach((item) => {
+        expect(item.value).toBeDefined();
+        expect(item.meta).toBeDefined();
+        results.push({ value: item.value, icon: item.meta?.icon || '' });
+      });
+
+      expect(results).toEqual([
+        { value: 'active', icon: '✅' },
+        { value: 'inactive', icon: '⭕' },
+      ]);
+    });
+
+    test('should handle mixed values (with and without metadata)', () => {
+      const Status = enumerator({
+        ACTIVE: ['active', { description: 'Has meta' }] as const,
+        PENDING: 'pending', // No metadata
+      } as const);
+
+      const results: Array<{ value: string; hasMeta: boolean }> = [];
+
+      Status.forEach((item) => {
+        results.push({
+          value: item.value,
+          hasMeta: item.meta !== undefined,
+        });
+      });
+
+      expect(results).toEqual([
+        { value: 'active', hasMeta: true },
+        { value: 'pending', hasMeta: false },
+      ]);
+    });
+
+    test('should provide correct idx and items array', () => {
+      const Numbers = enumerator({
+        ONE: 1,
+        TWO: 2,
+        THREE: 3,
+      } as const);
+
+      Numbers.forEach((item, idx, items) => {
+        expect(idx).toBeGreaterThanOrEqual(0);
+        expect(idx).toBeLessThan(3);
+        expect(items.length).toBe(3);
+        expect(items[idx]).toEqual(item);
+      });
+    });
+  });
 });
