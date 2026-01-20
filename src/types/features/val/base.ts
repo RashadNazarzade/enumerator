@@ -1,5 +1,5 @@
-import type { WhenNever } from '@/types/utilities';
+import type { WhenNever } from "@/types/utilities";
 
 export type ValueBase<Val, Description> = {
-   value: Val;
+  value: Val;
 } & WhenNever<Description, {}, { meta: Description }>;

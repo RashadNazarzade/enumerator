@@ -2,12 +2,11 @@ import type { EnumerateValue } from "@/types/base";
 import { isEnumerateValueWithMetadata } from "@/core/guards";
 
 export const enumDirectiveToValueConverter = <const T extends EnumerateValue>(
-    enumValue: T,
-    _idx: number
+  enumValue: T,
 ): EnumerateValue => {
-   if(isEnumerateValueWithMetadata(enumValue)) {
+  if (isEnumerateValueWithMetadata(enumValue)) {
     return enumValue[0];
-   }
+  }
 
-   return enumValue;
-}
+  return enumValue;
+};

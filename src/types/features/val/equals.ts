@@ -1,5 +1,5 @@
-import type { Simplify } from '@/types/utilities';
+import type { Simplify } from "@/types/utilities";
 
 export type ValueEquals<Val> = {
-    equals(check: unknown): check is Simplify<Val>;
+  equals(check: unknown): check is Simplify<Val>;
 };

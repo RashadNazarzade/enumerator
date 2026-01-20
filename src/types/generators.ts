@@ -1,4 +1,8 @@
-import type { WhenNestedDict, WhenDepthExceeded, IncrementDepth } from "./utilities";
+import type {
+  WhenNestedDict,
+  WhenDepthExceeded,
+  IncrementDepth,
+} from "./utilities";
 import type { ValueFeature } from "./features";
 import type { ObjectFeatureIfHasValues } from "./helpers";
 import type { DefaultMaxDepth } from "./base";
@@ -6,7 +10,7 @@ import type { DefaultMaxDepth } from "./base";
 export type ObjectGenerator<
   Obj,
   CurrentDepth extends 1[] = [],
-  MaxDepth extends number = DefaultMaxDepth
+  MaxDepth extends number = DefaultMaxDepth,
 > = WhenDepthExceeded<
   CurrentDepth,
   MaxDepth,
@@ -18,11 +22,4 @@ export type ObjectGenerator<
       ValueFeature<Obj[Key]>
     >;
   } & ObjectFeatureIfHasValues<Obj>
->
-
-
-
-
-
-
-
+>;

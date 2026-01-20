@@ -2,12 +2,17 @@ import type { EnumerateValueWithMeta } from "@/types/base";
 import type { ExtractDictValues, PickDictValues } from "@/types/utilities";
 
 import type { ValueBase, ValueEquals } from "./val";
-import type { ObjectBase, ObjectLoops, ObjectContains, ObjectContainsOneOf } from "./obj";
+import type {
+  ObjectBase,
+  ObjectLoops,
+  ObjectContains,
+  ObjectContainsOneOf,
+} from "./obj";
 
 export type ObjectFeature<
   Obj,
   ValObj = ExtractDictValues<Obj>,
-  Val = PickDictValues<ValObj>
+  Val = PickDictValues<ValObj>,
 > = ObjectBase<ValObj, Val> &
   ObjectLoops<Obj> &
   ObjectContains<Val> &
@@ -16,5 +21,5 @@ export type ObjectFeature<
 export type ValueFeature<
   EnumVal,
   Val = EnumVal extends EnumerateValueWithMeta ? EnumVal[0] : EnumVal,
-  Description = EnumVal extends EnumerateValueWithMeta ? EnumVal[1] : never
+  Description = EnumVal extends EnumerateValueWithMeta ? EnumVal[1] : never,
 > = ValueBase<Val, Description> & ValueEquals<Val>;

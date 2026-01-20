@@ -1,1 +1,1 @@
-export * from './dict-processor';
+export * from "./dict-processor";

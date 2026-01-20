@@ -1,22 +1,65 @@
 {
   "name": "@glitchproof/enumerator",
-  "module": "index.ts",
+  "version": "0.1.0",
+  "types": "dist/index.d.ts",
   "type": "module",
-  "private": true,
+  "license": "MIT",
+  "description": "> Type-safe enumerations with metadata, nesting, and built-in type guards.",
+  "sideEffects": false,
+  "author": {
+    "name": "GlitchTruth",
+    "url": "https://github.com/RashadNazarzade"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RashadNazarzade/enumerator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RashadNazarzade/enumerator/issues"
+  },
+  "homepage": "https://github.com/RashadNazarzade/enumerator#readme",
+  "keywords": [
+    "typescript",
+    "enumerations",
+    "metadata",
+    "nesting",
+    "type guards",
+    "runtime validation"
+  ],
+  "files": [
+    "dist",
+    "!dist/__test__",
+    "!dist/tests",
+    "!dist/**/*.test.*",
+    "!dist/**/*.spec.*"
+  ],
   "scripts": {
+    "build": "tsdown",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit",
+    "ci": "bun run format && bun run type-check && bun run test && bun run build",
+    "safe:release": "bun run ci && changeset version && changeset publish",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:types": "vitest typecheck",
-    "test:runtime": "vitest run src/tests/units/runtime",
     "test:bench": "vitest bench",
-    "test:bench:compare": "vitest bench --compare",
     "test:all": "npm run test:types && npm run test:runtime"
   },
   "devDependencies": {
     "expect-type": "^1.1.0",
+    "prettier": "^3.8.0",
+    "tsdown": "^0.20.0-beta.4",
     "vitest": "^4.0.17"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "bun@1.3.0",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
   }
 }

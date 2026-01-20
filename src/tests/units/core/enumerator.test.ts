@@ -1,23 +1,23 @@
-import { describe, test, expect } from 'vitest';
-import { enumerator } from '@/core/enumerator';
-import { EnumeratorDepthError } from '@/constants/errors';
+import { EnumeratorDepthError } from "@/constants/errors";
+import { enumerate } from "@/core/enumerator";
+import { describe, expect, test } from "vitest";
 
-describe('Enumerator - Core Functionality', () => {
-  describe('Basic Enum Creation', () => {
-    test('should create simple flat enum', () => {
-      const Status = enumerator({
-        ACTIVE: 'active',
-        INACTIVE: 'inactive',
+describe("Enumerator - Core Functionality", () => {
+  describe("Basic Enum Creation", () => {
+    test("should create simple flat enum", () => {
+      const Status = enumerate({
+        ACTIVE: "active",
+        INACTIVE: "inactive",
       } as const);
 
-      expect(Status.ACTIVE.value).toBe('active');
-      expect(Status.INACTIVE.value).toBe('inactive');
-      expect(Status.ACTIVE.equals('active')).toBe(true);
-      expect(Status.INACTIVE.equals('inactive')).toBe(true);
+      expect(Status.ACTIVE.value).toBe("active");
+      expect(Status.INACTIVE.value).toBe("inactive");
+      expect(Status.ACTIVE.equals("active")).toBe(true);
+      expect(Status.INACTIVE.equals("inactive")).toBe(true);
     });
 
-    test('should create enum with numbers', () => {
-      const Priority = enumerator({
+    test("should create enum with numbers", () => {
+      const Priority = enumerate({
         HIGH: 1,
         MEDIUM: 2,
         LOW: 3,
@@ -28,97 +28,97 @@ describe('Enumerator - Core Functionality', () => {
       expect(Priority.LOW.value).toBe(3);
     });
 
-    test('should create enum with metadata', () => {
-      const Status = enumerator({
-        ACTIVE: ['active', { description: 'User is active' }] as const,
-        INACTIVE: ['inactive', { description: 'User is inactive' }] as const,
+    test("should create enum with metadata", () => {
+      const Status = enumerate({
+        ACTIVE: ["active", { description: "User is active" }] as const,
+        INACTIVE: ["inactive", { description: "User is inactive" }] as const,
       });
 
-      expect(Status.ACTIVE.value).toBe('active');
-      expect(Status.ACTIVE.meta).toEqual({ description: 'User is active' });
-      expect(Status.INACTIVE.value).toBe('inactive');
-      expect(Status.INACTIVE.meta).toEqual({ description: 'User is inactive' });
+      expect(Status.ACTIVE.value).toBe("active");
+      expect(Status.ACTIVE.meta).toEqual({ description: "User is active" });
+      expect(Status.INACTIVE.value).toBe("inactive");
+      expect(Status.INACTIVE.meta).toEqual({ description: "User is inactive" });
     });
 
-    test('should create mixed enum (values + metadata)', () => {
-      const Mixed = enumerator({
-        SIMPLE: 'simple',
-        WITH_META: ['meta', { description: 'Has metadata' }] as const,
+    test("should create mixed enum (values + metadata)", () => {
+      const Mixed = enumerate({
+        SIMPLE: "simple",
+        WITH_META: ["meta", { description: "Has metadata" }] as const,
         NUMBER: 123,
       } as const);
 
-      expect(Mixed.SIMPLE.value).toBe('simple');
-      expect(Mixed.WITH_META.value).toBe('meta');
+      expect(Mixed.SIMPLE.value).toBe("simple");
+      expect(Mixed.WITH_META.value).toBe("meta");
       expect(Mixed.WITH_META.meta).toBeDefined();
       expect(Mixed.NUMBER.value).toBe(123);
     });
   });
 
-  describe('Nested Enums', () => {
-    test('should handle nested structure', () => {
-      const Config = enumerator({
+  describe("Nested Enums", () => {
+    test("should handle nested structure", () => {
+      const Config = enumerate({
         API: {
           SUCCESS: 200,
           ERROR: 400,
         },
         STATUS: {
-          ACTIVE: 'active',
-          INACTIVE: 'inactive',
+          ACTIVE: "active",
+          INACTIVE: "inactive",
         },
       } as const);
 
       expect(Config.API.SUCCESS.value).toBe(200);
       expect(Config.API.ERROR.value).toBe(400);
-      expect(Config.STATUS.ACTIVE.value).toBe('active');
-      expect(Config.STATUS.INACTIVE.value).toBe('inactive');
+      expect(Config.STATUS.ACTIVE.value).toBe("active");
+      expect(Config.STATUS.INACTIVE.value).toBe("inactive");
     });
 
-    test('should handle deep nesting', () => {
-      const Deep = enumerator({
+    test("should handle deep nesting", () => {
+      const Deep = enumerate({
         LEVEL1: {
           LEVEL2: {
             LEVEL3: {
-              VALUE: 'deep',
+              VALUE: "deep",
             },
           },
         },
       } as const);
 
-      expect(Deep.LEVEL1.LEVEL2.LEVEL3.VALUE.value).toBe('deep');
+      expect(Deep.LEVEL1.LEVEL2.LEVEL3.VALUE.value).toBe("deep");
     });
 
-    test('should handle mixed nested and flat', () => {
-      const Mixed = enumerator({
-        FLAT: 'flat-value',
+    test("should handle mixed nested and flat", () => {
+      const Mixed = enumerate({
+        FLAT: "flat-value",
         NESTED: {
-          INNER: 'inner-value',
+          INNER: "inner-value",
         },
-        ANOTHER: 'another-value',
+        ANOTHER: "another-value",
       } as const);
 
-      expect(Mixed.FLAT.value).toBe('flat-value');
-      expect(Mixed.NESTED.INNER.value).toBe('inner-value');
-      expect(Mixed.ANOTHER.value).toBe('another-value');
+      expect(Mixed.FLAT.value).toBe("flat-value");
+      expect(Mixed.NESTED.INNER.value).toBe("inner-value");
+      expect(Mixed.ANOTHER.value).toBe("another-value");
     });
   });
 
-  describe('ObjectFeature Methods', () => {
-    test('should add contains method to flat enums', () => {
-      const Status = enumerator({
-        ACTIVE: 'active',
-        INACTIVE: 'inactive',
-        PENDING: 'pending',
+  describe("ObjectFeature Methods", () => {
+    test("should add contains method to flat enums", () => {
+      const Status = enumerate({
+        ACTIVE: "active",
+        INACTIVE: "inactive",
+        PENDING: "pending",
       } as const);
 
-      expect(Status.contains('active')).toBe(true);
-      expect(Status.contains('inactive')).toBe(true);
-      expect(Status.contains('pending')).toBe(true);
-      expect(Status.contains('invalid')).toBe(false);
+      expect(Status.contains("active")).toBe(true);
+      expect(Status.contains("inactive")).toBe(true);
+      expect(Status.contains("pending")).toBe(true);
+      expect(Status.contains("invalid")).toBe(false);
       expect(Status.contains(123)).toBe(false);
     });
 
-    test('should add contains to nested levels', () => {
-      const Config = enumerator({
+    test("should add contains to nested levels", () => {
+      const Config = enumerate({
         HTTP: {
           SUCCESS: 200,
           ERROR: 400,
@@ -130,62 +130,68 @@ describe('Enumerator - Core Functionality', () => {
       expect(Config.HTTP.contains(404)).toBe(false);
     });
 
-    test('should have containsOneOf method', () => {
-      const Status = enumerator({
-        ACTIVE: 'active',
-        INACTIVE: 'inactive',
-        PENDING: 'pending',
+    test("should have containsOneOf method", () => {
+      const Status = enumerate({
+        ACTIVE: "active",
+        INACTIVE: "inactive",
+        PENDING: "pending",
       } as const);
 
       // Array variant
-      expect(Status.containsOneOf('active', ['active', 'pending'])).toBe(true);
-      expect(Status.containsOneOf('inactive', ['active', 'pending'])).toBe(false);
+      expect(Status.containsOneOf("active", ["active", "pending"])).toBe(true);
+      expect(Status.containsOneOf("inactive", ["active", "pending"])).toBe(
+        false,
+      );
 
       // Rest params variant
-      expect(Status.containsOneOf('active', 'active', 'pending')).toBe(true);
+      expect(Status.containsOneOf("active", "active", "pending")).toBe(true);
 
       // Callback variant
-      expect(Status.containsOneOf('active', (s) => [s.ACTIVE, s.PENDING])).toBe(true);
-      expect(Status.containsOneOf('inactive', (s) => [s.ACTIVE, s.PENDING])).toBe(false);
+      expect(Status.containsOneOf("active", (s) => [s.ACTIVE, s.PENDING])).toBe(
+        true,
+      );
+      expect(
+        Status.containsOneOf("inactive", (s) => [s.ACTIVE, s.PENDING]),
+      ).toBe(false);
     });
 
-    test('should have values array', () => {
-      const Status = enumerator({
-        ACTIVE: 'active',
-        INACTIVE: 'inactive',
+    test("should have values array", () => {
+      const Status = enumerate({
+        ACTIVE: "active",
+        INACTIVE: "inactive",
       } as const);
 
-      expect(Status.values).toContain('active');
-      expect(Status.values).toContain('inactive');
+      expect(Status.values).toContain("active");
+      expect(Status.values).toContain("inactive");
       expect(Status.values.length).toBe(2);
       expect(Object.isFrozen(Status.values)).toBe(true);
     });
 
-    test('should have asType property', () => {
-      const Status = enumerator({
-        ACTIVE: ['active', { description: 'Active' }] as const,
-        INACTIVE: 'inactive',
+    test("should have asType property", () => {
+      const Status = enumerate({
+        ACTIVE: ["active", { description: "Active" }] as const,
+        INACTIVE: "inactive",
       } as const);
 
-      expect(Status.asType.ACTIVE).toBe('active');
-      expect(Status.asType.INACTIVE).toBe('inactive');
+      expect(Status.asType.ACTIVE).toBe("active");
+      expect(Status.asType.INACTIVE).toBe("inactive");
       expect(Object.isFrozen(Status.asType)).toBe(true);
     });
   });
 
-  describe('Edge Cases', () => {
-    test('should handle empty string values', () => {
-      const Empty = enumerator({
-        EMPTY: '',
+  describe("Edge Cases", () => {
+    test("should handle empty string values", () => {
+      const Empty = enumerate({
+        EMPTY: "",
       } as const);
 
-      expect(Empty.EMPTY.value).toBe('');
-      expect(Empty.EMPTY.equals('')).toBe(true);
-      expect(Empty.contains('')).toBe(true);
+      expect(Empty.EMPTY.value).toBe("");
+      expect(Empty.EMPTY.equals("")).toBe(true);
+      expect(Empty.contains("")).toBe(true);
     });
 
-    test('should handle zero values', () => {
-      const Zero = enumerator({
+    test("should handle zero values", () => {
+      const Zero = enumerate({
         ZERO: 0,
       } as const);
 
@@ -195,8 +201,8 @@ describe('Enumerator - Core Functionality', () => {
       expect(Zero.contains(0)).toBe(true);
     });
 
-    test('should handle negative numbers', () => {
-      const Negative = enumerator({
+    test("should handle negative numbers", () => {
+      const Negative = enumerate({
         MINUS_ONE: -1,
         MINUS_INFINITY: -Infinity,
       } as const);
@@ -205,8 +211,8 @@ describe('Enumerator - Core Functionality', () => {
       expect(Negative.MINUS_INFINITY.value).toBe(-Infinity);
     });
 
-    test('should handle special numbers', () => {
-      const Special = enumerator({
+    test("should handle special numbers", () => {
+      const Special = enumerate({
         NAN: NaN,
         INFINITY: Infinity,
       } as const);
@@ -217,76 +223,76 @@ describe('Enumerator - Core Functionality', () => {
       expect(Special.INFINITY.equals(Infinity)).toBe(true);
     });
 
-    test('should handle single value enum', () => {
-      const Single = enumerator({
-        ONLY: 'only',
+    test("should handle single value enum", () => {
+      const Single = enumerate({
+        ONLY: "only",
       } as const);
 
-      expect(Single.ONLY.value).toBe('only');
-      expect(Single.contains('only')).toBe(true);
+      expect(Single.ONLY.value).toBe("only");
+      expect(Single.contains("only")).toBe(true);
       expect(Single.values.length).toBe(1);
     });
 
-    test('should handle large number of values', () => {
+    test("should handle large number of values", () => {
       const obj: Record<string, string> = {};
       for (let i = 0; i < 100; i++) {
         obj[`KEY_${i}`] = `value_${i}`;
       }
 
-      const Large = enumerator(obj);
+      const Large = enumerate(obj);
 
-      expect(Large?.KEY_0?.value).toBe('value_0');
-      expect(Large?.KEY_99?.value).toBe('value_99');
+      expect(Large?.KEY_0?.value).toBe("value_0");
+      expect(Large?.KEY_99?.value).toBe("value_99");
       expect(Large.values.length).toBe(100);
-      expect(Large.contains('value_50')).toBe(true);
+      expect(Large.contains("value_50")).toBe(true);
     });
 
-    test('should handle empty object at nested level', () => {
-      const WithEmpty = enumerator({
+    test("should handle empty object at nested level", () => {
+      const WithEmpty = enumerate({
         EMPTY: {},
-        VALUE: 'value',
+        VALUE: "value",
       } as const);
 
-      expect(WithEmpty.VALUE.value).toBe('value');
+      expect(WithEmpty.VALUE.value).toBe("value");
       expect(WithEmpty.EMPTY).toBeDefined();
     });
   });
 
-  describe('Depth Limiting', () => {
-    test('should enforce default maxDepth (10)', () => {
+  describe("Depth Limiting", () => {
+    test("should enforce default maxDepth (10)", () => {
       const createDeep = (depth: number): any => {
-        if (depth === 0) return { LEAF: 'value' };
+        if (depth === 0) return { LEAF: "value" };
         return { LEVEL: createDeep(depth - 1) };
       };
 
       // Depth 9 should work (0-9 = 10 levels)
       expect(() => {
-        enumerator(createDeep(9));
+        enumerate(createDeep(9));
       }).not.toThrow();
 
       // Depth 10 should throw (0-10 = 11 levels)
       expect(() => {
-        enumerator(createDeep(10));
+        enumerate(createDeep(10));
       }).toThrow(EnumeratorDepthError);
     });
 
-    test('should respect custom maxDepth', () => {
+    test("should respect custom maxDepth", () => {
       const deep = {
-        L1: { L2: { L3: { L4: { L5: 'value' } } } },
+        L1: { L2: { L3: { L4: { L5: "value" } } } },
       } as const;
 
       // Should throw with maxDepth 3
       expect(() => {
-        enumerator(deep, { maxDepth: 3 });
+        enumerate(deep, { maxDepth: 3 });
       }).toThrow(EnumeratorDepthError);
 
       // Should work with maxDepth 5
       expect(() => {
-        enumerator(deep, { maxDepth: 5 });
+        enumerate(deep, { maxDepth: 5 });
       }).not.toThrow();
     });
 
-    test('should include path in depth error', () => {
+    test("should include path in depth error", () => {
       const deep = {
         API: {
           V1: {
@@ -299,7 +305,7 @@ describe('Enumerator - Core Functionality', () => {
                         HERE: {
                           IS: {
                             THE: {
-                              PROBLEM: 'value',
+                              PROBLEM: "value",
                             },
                           },
                         },
@@ -314,59 +320,59 @@ describe('Enumerator - Core Functionality', () => {
       };
 
       try {
-        enumerator(deep);
-        expect.fail('Should have thrown');
+        enumerate(deep);
+        expect.fail("Should have thrown");
       } catch (error) {
         expect(error).toBeInstanceOf(EnumeratorDepthError);
-        expect((error as Error).message).toContain('Path:');
+        expect((error as Error).message).toContain("Path:");
       }
     });
   });
 
-  describe('Type Guard Functionality', () => {
-    test('equals should narrow types', () => {
-      const Status = enumerator({
-        ACTIVE: 'active',
-        INACTIVE: 'inactive',
+  describe("Type Guard Functionality", () => {
+    test("equals should narrow types", () => {
+      const Status = enumerate({
+        ACTIVE: "active",
+        INACTIVE: "inactive",
       } as const);
 
       const checkStatus = (input: unknown) => {
         if (Status.ACTIVE.equals(input)) {
           // Type should be narrowed
-          const typed: 'active' = input;
-          expect(typed).toBe('active');
+          const typed: "active" = input;
+          expect(typed).toBe("active");
           return true;
         }
         return false;
       };
 
-      expect(checkStatus('active')).toBe(true);
-      expect(checkStatus('other')).toBe(false);
+      expect(checkStatus("active")).toBe(true);
+      expect(checkStatus("other")).toBe(false);
     });
 
-    test('contains should narrow types', () => {
-      const Status = enumerator({
-        ACTIVE: 'active',
-        INACTIVE: 'inactive',
+    test("contains should narrow types", () => {
+      const Status = enumerate({
+        ACTIVE: "active",
+        INACTIVE: "inactive",
       } as const);
 
       const checkStatus = (input: unknown) => {
         if (Status.contains(input)) {
           // Type should be narrowed to 'active' | 'inactive'
-          expect(['active', 'inactive']).toContain(input);
+          expect(["active", "inactive"]).toContain(input);
           return true;
         }
         return false;
       };
 
-      expect(checkStatus('active')).toBe(true);
-      expect(checkStatus('invalid')).toBe(false);
+      expect(checkStatus("active")).toBe(true);
+      expect(checkStatus("invalid")).toBe(false);
     });
   });
 
-  describe('Real-World Scenarios', () => {
-    test('HTTP status codes', () => {
-      const HttpStatus = enumerator({
+  describe("Real-World Scenarios", () => {
+    test("HTTP status codes", () => {
+      const HttpStatus = enumerate({
         SUCCESS: {
           OK: 200,
           CREATED: 201,
@@ -387,45 +393,46 @@ describe('Enumerator - Core Functionality', () => {
       expect(HttpStatus.SUCCESS.contains(404)).toBe(false);
     });
 
-    test('User permissions', () => {
-      const Permissions = enumerator({
-        ADMIN: ['admin', { description: 'Full access' }] as const,
-        EDITOR: ['editor', { description: 'Can edit content' }] as const,
-        VIEWER: ['viewer', { description: 'Read-only access' }] as const,
+    test("User permissions", () => {
+      const Permissions = enumerate({
+        ADMIN: ["admin", { description: "Full access" }] as const,
+        EDITOR: ["editor", { description: "Can edit content" }] as const,
+        VIEWER: ["viewer", { description: "Read-only access" }] as const,
       });
 
-      expect(Permissions.ADMIN.value).toBe('admin');
-      expect(Permissions.ADMIN.meta.description).toBe('Full access');
-      expect(Permissions.contains('admin')).toBe(true);
-      expect(Permissions.containsOneOf('editor', ['admin', 'editor'])).toBe(true);
+      expect(Permissions.ADMIN.value).toBe("admin");
+      expect(Permissions.ADMIN.meta.description).toBe("Full access");
+      expect(Permissions.contains("admin")).toBe(true);
+      expect(Permissions.containsOneOf("editor", ["admin", "editor"])).toBe(
+        true,
+      );
     });
 
-    test('API routes', () => {
-      const Routes = enumerator({
+    test("API routes", () => {
+      const Routes = enumerate({
         API: {
           V1: {
-            USERS: '/api/v1/users',
-            POSTS: '/api/v1/posts',
+            USERS: "/api/v1/users",
+            POSTS: "/api/v1/posts",
           },
           V2: {
-            USERS: '/api/v2/users',
-            POSTS: '/api/v2/posts',
+            USERS: "/api/v2/users",
+            POSTS: "/api/v2/posts",
           },
         },
       } as const);
 
-      expect(Routes.API.V1.USERS.value).toBe('/api/v1/users');
-      expect(Routes.API.V2.POSTS.value).toBe('/api/v2/posts');
-      expect(Routes.API.V1.contains('/api/v1/users')).toBe(true);
+      expect(Routes.API.V1.USERS.value).toBe("/api/v1/users");
+      expect(Routes.API.V2.POSTS.value).toBe("/api/v2/posts");
+      expect(Routes.API.V1.contains("/api/v1/users")).toBe(true);
     });
   });
 
-
-  describe('map and forEach', () => {
-    test('should map values without metadata', () => {
-      const Status = enumerator({
-        ACTIVE: 'active',
-        INACTIVE: 'inactive',
+  describe("map and forEach", () => {
+    test("should map values without metadata", () => {
+      const Status = enumerate({
+        ACTIVE: "active",
+        INACTIVE: "inactive",
       } as const);
 
       const mapped = Status.map((item) => {
@@ -434,13 +441,13 @@ describe('Enumerator - Core Functionality', () => {
         return item.value.toUpperCase();
       });
 
-      expect(mapped).toEqual(['ACTIVE', 'INACTIVE']);
+      expect(mapped).toEqual(["ACTIVE", "INACTIVE"]);
     });
 
-    test('should forEach values without metadata', () => {
-      const Status = enumerator({
-        ACTIVE: 'active',
-        INACTIVE: 'inactive',
+    test("should forEach values without metadata", () => {
+      const Status = enumerate({
+        ACTIVE: "active",
+        INACTIVE: "inactive",
       } as const);
 
       const arr: string[] = [];
@@ -451,29 +458,31 @@ describe('Enumerator - Core Functionality', () => {
         arr.push(item.value);
       });
 
-      expect(arr).toEqual(['active', 'inactive']);
+      expect(arr).toEqual(["active", "inactive"]);
     });
 
-    test('should map values with metadata', () => {
-      const Status = enumerator({
-        ACTIVE: ['active', { description: 'Active User' }] as const,
-        INACTIVE: ['inactive', { description: 'Inactive User' }] as const,
+    test("should map values with metadata", () => {
+      const Status = enumerate({
+        ACTIVE: ["active", { description: "Active User" }] as const,
+        INACTIVE: ["inactive", { description: "Inactive User" }] as const,
       } as const);
 
       const mapped = Status.map((item) => {
-
         expect(item.value).toBeDefined();
         expect(item.meta).toBeDefined();
         return `${item.value}: ${item.meta?.description}`;
       });
 
-      expect(mapped).toEqual(['active: Active User', 'inactive: Inactive User']);
+      expect(mapped).toEqual([
+        "active: Active User",
+        "inactive: Inactive User",
+      ]);
     });
 
-    test('should forEach values with metadata', () => {
-      const Status = enumerator({
-        ACTIVE: ['active', { icon: '✅' }] as const,
-        INACTIVE: ['inactive', { icon: '⭕' }] as const,
+    test("should forEach values with metadata", () => {
+      const Status = enumerate({
+        ACTIVE: ["active", { icon: "✅" }] as const,
+        INACTIVE: ["inactive", { icon: "⭕" }] as const,
       } as const);
 
       const results: Array<{ value: string; icon: string }> = [];
@@ -481,19 +490,19 @@ describe('Enumerator - Core Functionality', () => {
       Status.forEach((item) => {
         expect(item.value).toBeDefined();
         expect(item.meta).toBeDefined();
-        results.push({ value: item.value, icon: item.meta?.icon || '' });
+        results.push({ value: item.value, icon: item.meta?.icon || "" });
       });
 
       expect(results).toEqual([
-        { value: 'active', icon: '✅' },
-        { value: 'inactive', icon: '⭕' },
+        { value: "active", icon: "✅" },
+        { value: "inactive", icon: "⭕" },
       ]);
     });
 
-    test('should handle mixed values (with and without metadata)', () => {
-      const Status = enumerator({
-        ACTIVE: ['active', { description: 'Has meta' }] as const,
-        PENDING: 'pending', // No metadata
+    test("should handle mixed values (with and without metadata)", () => {
+      const Status = enumerate({
+        ACTIVE: ["active", { description: "Has meta" }] as const,
+        PENDING: "pending", // No metadata
       } as const);
 
       const results: Array<{ value: string; hasMeta: boolean }> = [];
@@ -506,13 +515,13 @@ describe('Enumerator - Core Functionality', () => {
       });
 
       expect(results).toEqual([
-        { value: 'active', hasMeta: true },
-        { value: 'pending', hasMeta: false },
+        { value: "active", hasMeta: true },
+        { value: "pending", hasMeta: false },
       ]);
     });
 
-    test('should provide correct idx and items array', () => {
-      const Numbers = enumerator({
+    test("should provide correct idx and items array", () => {
+      const Numbers = enumerate({
         ONE: 1,
         TWO: 2,
         THREE: 3,

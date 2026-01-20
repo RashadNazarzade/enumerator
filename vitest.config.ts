@@ -1,19 +1,19 @@
-import { defineConfig } from 'vitest/config';
-import path from 'path';
+import { defineConfig } from "vitest/config";
+import path from "path";
 
 export default defineConfig({
   test: {
     typecheck: {
       enabled: true,
-      tsconfig: './tsconfig.json',
+      tsconfig: "./tsconfig.json",
     },
     benchmark: {
-      include: ['src/tests/performance/**/*.bench.ts'],
+      include: ["src/tests/performance/**/*.bench.ts"],
     },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 });
