@@ -3,9 +3,9 @@
 Type-safe enumerations with metadata, nesting, and built-in validation.
 
 ```typescript
-import { enumerator } from "@glitchproof/enumerator";
+import { enumerate } from "@glitchproof/enumerator";
 
-const Status = enumerator({
+const Status = enumerate({
   ACTIVE: ["active", { icon: "✅", color: "green" }],
   INACTIVE: ["inactive", { icon: "⭕", color: "gray" }],
   PENDING: "pending",
@@ -36,10 +36,10 @@ npm install @glitchproof/enumerator
 ## Quick Start
 
 ```typescript
-import { enumerator } from "@glitchproof/enumerator";
+import { enumerate } from "@glitchproof/enumerator";
 
 // Simple values
-const Status = enumerator({
+const Status = enumerate({
   ACTIVE: "active",
   INACTIVE: "inactive",
   PENDING: "pending",
@@ -50,7 +50,7 @@ Status.ACTIVE.equals(userInput); // Type guard
 Status.contains(apiResponse); // Validation
 
 // With metadata
-const HTTP = enumerator({
+const HTTP = enumerate({
   OK: [200, { message: "Success", retry: false }],
   ERROR: [500, { message: "Server error", retry: true }],
 });
@@ -59,7 +59,7 @@ HTTP.OK.value; // 200
 HTTP.OK.meta.message; // 'Success'
 
 // Nested
-const API = enumerator({
+const API = enumerate({
   V1: { USERS: "/v1/users", POSTS: "/v1/posts" },
   V2: { USERS: "/v2/users", POSTS: "/v2/posts" },
 });
@@ -71,7 +71,7 @@ enum LegacyStatus {
   ACTIVE = "active",
   PENDING = "pending",
 }
-const Legacy = enumerator(LegacyStatus);
+const Legacy = enumerate(LegacyStatus);
 
 Legacy.ACTIVE.value; // 'active'
 Legacy.contains("active"); // true
@@ -122,7 +122,7 @@ Status.map(({ value, meta }) => ({
 **Configuration:**
 
 ```typescript
-enumerator(definition, { maxDepth: 5 }); // Limit nesting (default: 10)
+enumerate(definition, { maxDepth: 5 }); // Limit nesting (default: 10)
 ```
 
 ## Examples
@@ -130,7 +130,7 @@ enumerator(definition, { maxDepth: 5 }); // Limit nesting (default: 10)
 ### API Error Handling
 
 ```typescript
-const APIError = enumerator({
+const APIError = enumerate({
   NETWORK: ["network", { message: "Connection failed", retry: true }],
   AUTH: ["auth", { message: "Please login", retry: false }],
   RATE_LIMIT: [
@@ -158,7 +158,7 @@ async function fetchWithRetry(url: string) {
 ### Theme Design Tokens
 
 ```typescript
-const Color = enumerator({
+const Color = enumerate({
   PRIMARY: ["#3b82f6", { name: "Blue", dark: "#1e40af" }],
   SUCCESS: ["#22c55e", { name: "Green", dark: "#15803d" }],
   DANGER: ["#ef4444", { name: "Red", dark: "#b91c1c" }],
@@ -184,7 +184,7 @@ const cssVars = Color.map(
 ### Workflow States
 
 ```typescript
-const TaskStatus = enumerator({
+const TaskStatus = enumerate({
   TODO: ["todo", { next: ["in_progress"], canEdit: true }],
   IN_PROGRESS: ["in_progress", { next: ["review", "todo"], canEdit: true }],
   REVIEW: ["review", { next: ["done", "in_progress"], canEdit: false }],
@@ -207,7 +207,7 @@ function canTransition(current: string, next: string): boolean {
 Full type inference and narrowing:
 
 ```typescript
-const Status = enumerator({
+const Status = enumerate({
   ACTIVE: ["active", { icon: "✅" }],
   INACTIVE: "inactive",
 });
@@ -233,7 +233,7 @@ type Meta = typeof Status.ACTIVE.meta; // { icon: '✅' }
 ### Filter by Metadata
 
 ```typescript
-const Features = enumerator({
+const Features = enumerate({
   ANALYTICS: ["analytics", { enabled: true }],
   AI_CHAT: ["ai_chat", { enabled: false }],
   EXPORT: ["export", { enabled: true }],
@@ -250,7 +250,7 @@ const enabled = Features.map((item) => item)
 `.equals()` uses `Object.is()` for correct NaN and ±0 handling:
 
 ```typescript
-const Nums = enumerator({ ZERO: 0, NEG_ZERO: -0, NAN: NaN });
+const Nums = enumerate({ ZERO: 0, NEG_ZERO: -0, NAN: NaN });
 
 Nums.ZERO.equals(0); // true
 Nums.ZERO.equals(-0); // false (distinguishes +0 from -0)
@@ -261,20 +261,20 @@ Nums.NAN.equals(NaN); // true (handles NaN correctly)
 
 ```typescript
 // ✅ Keep metadata consistent
-const Status = enumerator({
+const Status = enumerate({
   ACTIVE: ["active", { icon: "✅", color: "green" }],
   INACTIVE: ["inactive", { icon: "⭕", color: "gray" }],
 });
 
 // ✅ Limit nesting depth (2-3 levels)
-const API = enumerator({
+const API = enumerate({
   V1: { USERS: "/v1/users" },
   V2: { USERS: "/v2/users" },
 });
 
 // ✅ Use for external configs only
 const config = { ACTIVE: "active" } as const;
-const Status = enumerator(config);
+const Status = enumerate(config);
 ```
 
 ## Migration from TS Enums
@@ -290,7 +290,7 @@ enum Status {
 }
 
 // Wrap it directly - gets all enumerator features!
-const StatusEnum = enumerator(Status);
+const StatusEnum = enumerate(Status);
 
 StatusEnum.ACTIVE.value; // 'active'
 StatusEnum.ACTIVE.equals("active"); // true (type guard!)
@@ -312,7 +312,7 @@ enum Status {
 const meta = { [Status.ACTIVE]: { icon: "✅" } };
 
 // After
-const Status = enumerator({
+const Status = enumerate({
   ACTIVE: ["active", { icon: "✅" }],
 });
 ```

@@ -28,7 +28,8 @@
     "metadata",
     "nesting",
     "type guards",
-    "runtime validation"
+    "runtime validation",
+    "enumerate"
   ],
   "files": [
     "dist",

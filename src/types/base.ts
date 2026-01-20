@@ -28,3 +28,7 @@ export type ProcessorOptions = {
 };
 
 export type EnumerateOptions = Pick<ProcessorOptions, "maxDepth">;
+
+export type EnumerateOptionsDefault = {
+  maxDepth: DefaultMaxDepth;
+};
