@@ -1,7 +1,11 @@
 {
   "name": "@glitchproof/enumerator",
   "version": "0.1.0",
-  "types": "dist/index.d.ts",
+  "types": "dist/index.d.mts",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
   "type": "module",
   "license": "MIT",
   "description": "> Type-safe enumerations with metadata, nesting, and built-in type guards.",
@@ -41,11 +45,13 @@
     "safe:release": "bun run ci && changeset version && changeset publish",
     "test": "vitest run",
     "test:watch": "vitest",
+    "prepublishOnly": "bun run ci",
     "test:types": "vitest typecheck",
     "test:bench": "vitest bench",
     "test:all": "npm run test:types && npm run test:runtime"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "expect-type": "^1.1.0",
     "prettier": "^3.8.0",
     "tsdown": "^0.20.0-beta.4",
@@ -57,9 +63,5 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "bun@1.3.0",
-  "exports": {
-    ".": "./dist/index.mjs",
-    "./package.json": "./package.json"
-  }
+  "packageManager": "bun@1.3.0"
 }
