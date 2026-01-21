@@ -21,6 +21,8 @@ export type EnumerateNestedDict = {
   [key: string]: EnumerateValue | EnumerateNestedDict;
 };
 
+// Options
+
 export type ProcessorOptions = {
   maxDepth?: number;
   currentDepth?: number;
@@ -32,3 +34,12 @@ export type EnumerateOptions = Pick<ProcessorOptions, "maxDepth">;
 export type EnumerateOptionsDefault = {
   maxDepth: DefaultMaxDepth;
 };
+
+// Infer Types
+
+export type InferType<EnumObj> = EnumObj extends { asType: infer Type }
+  ? Type
+  : never;
+export type InferUnionType<EnumObj> = EnumObj extends { asValueType: infer Val }
+  ? Val
+  : never;

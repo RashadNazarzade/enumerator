@@ -96,13 +96,94 @@ Status.contains(value); // Check if value exists
 Status.containsOneOf(value, ["active", "pending"]); // Check subset (array)
 Status.containsOneOf(value, "active", "pending"); // Check subset (rest params)
 Status.containsOneOf(value, (s) => s.ACTIVE); // Check subset (callback)
+Status.containsOneOf(value, (s) => [s.ACTIVE, s.PENDING]); // Check subset (callback)
 ```
 
 **Access:**
 
 ```typescript
-Status.values; // ['active', 'inactive', 'pending'] - Frozen array
+Status.values; // ['active', 'inactive', 'pending'] - Frozen array, also type is a tuple of values like ['active', 'inactive', 'pending']  same as value
 Status.asType; // { ACTIVE: 'active', ... } - Key-value object (lazy, frozen)
+Status.asValueType; // 'active' | 'inactive' |'pending' - only for type , runtime value is a null
+```
+
+**Types**
+
+`InferType` and `InferTypeAsUnion` are utility types to extract types from enumerated objects.
+
+- **`InferType<EnumObj>`** - Extracts the `asType` property type (key-value object)
+- **`InferUnionType<EnumObj>`** - Extracts the `asValueType` property type (union of values)
+
+```typescript
+import {
+  enumerate,
+  type InferType,
+  type InferUnionType,
+} from "@glitchproof/enumerator";
+
+const HTTP_CODES = enumerate({
+  SUCCESS_CODES: {
+    SUCCESS: 200,
+    CREATED: 201,
+  },
+  ERROR_CODES: {
+    BAD_REQUEST: [
+      400,
+      { message: "Bad Request", retry: false, category: "client_error" },
+    ],
+    UNAUTHORIZED: [
+      401,
+      { message: "Unauthorized", retry: false, category: "client_error" },
+    ],
+    FORBIDDEN: [
+      403,
+      { message: "Forbidden", retry: false, category: "client_error" },
+    ],
+    NOT_FOUND: [
+      404,
+      { message: "Not Found", retry: false, category: "client_error" },
+    ],
+    SERVER_ERRORS: {
+      INTERNAL_SERVER_ERROR: [
+        500,
+        {
+          message: "Internal Server Error",
+          retry: true,
+          category: "server_error",
+        },
+      ],
+      BAD_GATEWAY: [
+        502,
+        { message: "Bad Gateway", retry: true, category: "server_error" },
+      ],
+      SERVICE_UNAVAILABLE: [
+        503,
+        {
+          message: "Service Unavailable",
+          retry: true,
+          category: "server_error",
+        },
+      ],
+    },
+  },
+});
+
+// InferType - extracts asType (key-value object)
+type ErrorCodesType = InferType<typeof HTTP_CODES.ERROR_CODES>;
+// Result: { BAD_REQUEST: 400; UNAUTHORIZED: 401; FORBIDDEN: 403; NOT_FOUND: 404 }
+// Note: SERVER_ERRORS is not included (it's nested)
+
+// InferTypeAsUnion - extracts asValueType (union of values)
+type ErrorCodesUnion = InferTypeAsUnion<typeof HTTP_CODES.ERROR_CODES>;
+// Result: 400 | 401 | 403 | 404
+// Note: Nested values (500, 502, 503) are not included
+
+// Alternative: Direct property access (same result)
+type ErrorCodesTypeAlt = typeof HTTP_CODES.ERROR_CODES.asType;
+type ErrorCodesUnionAlt = typeof HTTP_CODES.ERROR_CODES.asValueType;
+
+
+type HttpCodes = InferType<typeof HTTP_CODES>; // Returns `never` because HTTP_CODES has no direct enum values, only a container of nested enumerator objects
 ```
 
 **Iteration:**
